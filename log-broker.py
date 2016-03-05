@@ -22,13 +22,12 @@ def sub_pub_proxy():
     try:
         zmq.proxy(frontend, backend)
     except (KeyboardInterrupt, SystemExit):
-        frontend.close()
-        backend.close()
         raise
     except:
+        return
+    finally:
         frontend.close()
         backend.close()
-        return
 
 
 def subscriber(addr):
@@ -44,13 +43,12 @@ def subscriber(addr):
             msg = sub.recv_multipart()
             pub.send_multipart(msg)
         except (KeyboardInterrupt, SystemExit):
-            sub.close()
-            pub.close()
             raise
         except:
+            return
+        finally:
             sub.close()
             pub.close()
-            return
 
 
 def main(subscribe_to):
@@ -75,9 +73,10 @@ if __name__ == "__main__":
     try:
         main(argv[1:])
     except KeyboardInterrupt:
-        context = zmq.Context.instance()
-        context.destroy()
         try:
             exit(0)
         except SystemExit:
             _exit(0)
+    finally:
+        context = zmq.Context.instance()
+        context.destroy()
