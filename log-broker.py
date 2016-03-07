@@ -38,17 +38,18 @@ def subscriber(addr):
     pub = context.socket(zmq.PUB)
     pub.connect(FRONTEND_ADDR)
 
-    while True:
-        try:
+    try:
+        while True:
             msg = sub.recv_multipart()
             pub.send_multipart(msg)
-        except (KeyboardInterrupt, SystemExit):
-            raise
-        except:
-            return
-        finally:
-            sub.close()
-            pub.close()
+            print(repr(msg))
+    except (KeyboardInterrupt, SystemExit):
+        raise
+    except:
+        return
+    finally:
+        sub.close()
+        pub.close()
 
 
 def main(subscribe_to):
