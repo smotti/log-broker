@@ -42,7 +42,6 @@ def subscriber(addr):
         while True:
             msg = sub.recv_multipart()
             pub.send_multipart(msg)
-            print(repr(msg))
     except (KeyboardInterrupt, SystemExit):
         raise
     except:
